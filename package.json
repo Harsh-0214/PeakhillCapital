@@ -1,0 +1,39 @@
+{
+  "name": "peakhill-capital",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Peakhill Capital — commercial real estate investment manager. Marketing website.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm run build",
+    "prebuild": "node scripts/build-art.mjs && node scripts/build-brand-assets.mjs"
+  },
+  "dependencies": {
+    "next": "16.2.12",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "16.2.12",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "overrides": {
+    "sharp": "^0.35.3",
+    "postcss": "^8.5.25"
+  }
+}

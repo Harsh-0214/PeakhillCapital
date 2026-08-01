@@ -1,0 +1,24 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Verification artifacts
+/verification/screenshots/
+*.tsbuildinfo
+next-env.d.ts
+
+.DS_Store
+*.log
+npm-debug.log*
+.vercel
+.idea/
+.vscode/
+verification/screenshots/
+verification/report.txt

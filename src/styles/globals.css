@@ -1,0 +1,287 @@
+@import 'tailwindcss';
+
+/* ============================================================================
+   PEAKHILL CAPITAL — DESIGN TOKENS
+   "Structured Capital, quietly."
+
+   The site reads like an architectural section drawing crossed with a term
+   sheet. Precision, not decoration. The grid does the expressive work.
+
+   Rules that are enforced, not suggested:
+   - Components reference semantic tokens. Never a raw hex.
+   - Brass on paper is for RULES AND GRAPHICS ONLY. #C4A052 on #F4F2ED is
+     2.2:1 and fails WCAG AA. Text uses --color-brass-ink (5.0:1).
+   - Only transform / opacity / clip-path animate. Never `transition: all`.
+   - Never `ease-in` on UI. Never animate from scale(0).
+   ========================================================================= */
+
+@theme {
+  /* --- Colour ------------------------------------------------------------ */
+  --color-navy: #0a1b39; /* primary ground, sampled from the logo */
+  --color-navy-deep: #06122a; /* footer, scrims */
+  --color-navy-mid: #12294f; /* raised surfaces on navy */
+  --color-navy-line: #1e3763; /* borders on navy */
+  --color-navy-muted: #8fa0b8; /* secondary text on navy — 6.4:1 */
+
+  --color-paper: #f4f2ed; /* reading ground */
+  --color-paper-warm: #eae7e0; /* alternating band */
+  --color-paper-line: #d8d4ca; /* borders on paper */
+
+  --color-ink: #111827; /* body text on paper — 15.9:1 */
+  --color-ink-soft: #4a5568; /* secondary text on paper — 6.7:1 */
+
+  --color-brass: #c4a052; /* accent: rules, marks, text ON NAVY (6.9:1) */
+  --color-brass-ink: #7e6320; /* the ONLY brass permitted as text on paper */
+  --color-brass-dim: #8a7440; /* brass rules that need to recede */
+
+  --color-danger: #a02b2b;
+  --color-success: #1f6b4a;
+
+  /* --- Type -------------------------------------------------------------- */
+  --font-display: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Fluid modular scale. Floors are the mobile size, ceilings the desktop. */
+  --text-2xs: 0.6875rem; /* 11px — mono eyebrows only, never prose */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem; /* 16px minimum body on mobile */
+  --text-lg: clamp(1.0625rem, 0.99rem + 0.31vw, 1.1875rem);
+  --text-xl: clamp(1.1875rem, 1.08rem + 0.47vw, 1.4375rem);
+  --text-2xl: clamp(1.375rem, 1.2rem + 0.78vw, 1.875rem);
+  --text-3xl: clamp(1.625rem, 1.32rem + 1.36vw, 2.5rem);
+  --text-4xl: clamp(2rem, 1.5rem + 2.22vw, 3.375rem);
+  --text-5xl: clamp(2.375rem, 1.62rem + 3.36vw, 4.5rem);
+  --text-6xl: clamp(2.75rem, 1.55rem + 5.33vw, 6rem);
+
+  /* --- Motion ------------------------------------------------------------ */
+  /* Built-in CSS easings are too weak; these have the punch that reads as
+     intentional. `ease-in` is deliberately absent — it delays the first
+     moment of movement, which is exactly when the user is looking. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --duration-press: 140ms;
+  --duration-fast: 180ms;
+  --duration-base: 240ms;
+  --duration-slow: 420ms;
+  --duration-reveal: 720ms;
+
+  /* --- Layout ------------------------------------------------------------ */
+  --spacing-gutter: 1.5rem;
+  --container-page: 84rem; /* 1344px */
+  --container-prose: 40rem;
+
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+}
+
+/* ============================================================================
+   BASE
+   ========================================================================= */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    /* Kill the 300ms tap delay without disabling zoom. */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* The sticky header must not cover the target of an in-page anchor. */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Belt and braces against a single wide child creating a scrollbar. */
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.06;
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+    font-optical-sizing: auto;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* A visible, branded focus ring. Never removed — only restyled. */
+  :focus-visible {
+    outline: 2px solid var(--color-brass);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-brass) 34%, transparent);
+    color: var(--color-ink);
+  }
+
+  [data-surface='navy'] ::selection {
+    background-color: color-mix(in srgb, var(--color-brass) 40%, transparent);
+    color: var(--color-paper);
+  }
+
+  /* Images never overflow their column and never shift layout. */
+  img,
+  svg,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Native form controls inherit the type system. */
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+}
+
+/* ============================================================================
+   THE SYSTEM — the four devices that make every page one site
+   ========================================================================= */
+
+@layer components {
+  /* 1. The hairline column grid. Present on every page, at the threshold of
+        perception. This is the structure of the deal, literally drawn. */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    /* Four columns on mobile, twelve from `lg`. Set by the component. */
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--rule-color) 0,
+      var(--rule-color) 1px,
+      transparent 1px,
+      transparent var(--rule-step)
+    );
+    background-position: left top;
+  }
+
+  /* 2. A rule that draws itself in on first sight, left to right. Uses
+        clip-path so nothing reflows and it stays on the compositor. */
+  .rule-draw {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--duration-reveal) var(--ease-out);
+  }
+  .rule-draw[data-visible='true'] {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* 3. Content that rises a little as it enters. Never from scale(0) —
+        nothing in the real world appears out of nothing. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--duration-slow) var(--ease-out),
+      transform var(--duration-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .reveal[data-visible='true'] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 4. Mono eyebrow. "FIG. 01 — PLATFORM". The site's connective tissue. */
+  .figure-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Prose measure for long-form reading. */
+  .prose-measure {
+    max-width: 68ch;
+  }
+}
+
+@layer utilities {
+  /* Tabular figures everywhere a number is compared to another number. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  /* Hover effects must not fire on touch, where they latch on tap. */
+  @media (hover: hover) and (pointer: fine) {
+    .hover-lift {
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .hover-lift:hover {
+      transform: translateY(-3px);
+    }
+  }
+
+  /* Press feedback within 100ms — the UI confirms it heard you. */
+  .press {
+    transition: transform var(--duration-press) var(--ease-out);
+    touch-action: manipulation;
+  }
+  .press:active {
+    transform: scale(0.97);
+  }
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   Fewer and gentler, not zero. Opacity still aids comprehension; movement goes.
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .rule-draw {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  .press:active,
+  .hover-lift:hover {
+    transform: none !important;
+  }
+}
